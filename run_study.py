@@ -18,7 +18,7 @@ from src import data, figures, netload, network, storage
 YEAR = 2025
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "outputs")
 DOCS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "docs")  # the website folder (Vercel / GitHub Pages)
-REPO_URL = "https://github.com/Rehmanmohammed03/ontario-peak-storage-study"
+REPO_URL = "https://github.com/Rehmanmohammed03/ontario-peak-storage-study-analysis"
 SIZES = list(range(250, 6001, 250))      # MW of storage tested
 DURATIONS = [2, 4, 8]                     # hours
 RTE = 0.85                                # round-trip efficiency
