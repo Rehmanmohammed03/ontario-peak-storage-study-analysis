@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ontario Storage Study</title>
+<meta name="description" content="How much battery storage lowers Ontario's peak demand, using IESO public data.">
+<style>
+:root{
+  --bg:#fafaf8;--panel:#f1f1ee;--ink:#141413;--ink2:#4f4e4a;--ink3:#76756f;--rule:#dfded9;--grid:#ebeae6;
+  --s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--accent:#2a78d6;--accent-ink:#1d5fae;--sel:#d6e5f8;--focus:#2a78d6;
+  --tip-shadow:0 6px 20px rgba(20,20,19,.12);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#161615;--panel:#1f1f1d;--ink:#efeeea;--ink2:#c4c3bb;--ink3:#93928b;--rule:#33332f;--grid:#2a2a27;
+  --s1:#3987e5;--s2:#d95926;--s3:#199e70;--accent:#5b9cec;--accent-ink:#8dbaf2;--sel:#24405f;--focus:#5b9cec;
+  --tip-shadow:0 6px 20px rgba(0,0,0,.45);color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#161615;--panel:#1f1f1d;--ink:#efeeea;--ink2:#c4c3bb;--ink3:#93928b;--rule:#33332f;--grid:#2a2a27;
+  --s1:#3987e5;--s2:#d95926;--s3:#199e70;--accent:#5b9cec;--accent-ink:#8dbaf2;--sel:#24405f;--focus:#5b9cec;
+  --tip-shadow:0 6px 20px rgba(0,0,0,.45);color-scheme:dark;}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.55 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;font-variant-numeric:tabular-nums}
+::selection{background:var(--sel);color:var(--ink)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px}
+a{color:var(--accent-ink);text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{text-decoration-thickness:2px}
+b,strong{font-weight:620}
+.wrap{max-width:68rem;margin:0 auto;padding:2.5rem 1rem 3.5rem}
+header{max-width:46rem}
+h1{font-size:2rem;line-height:1.15;font-weight:680;letter-spacing:-.02em;margin:0 0 .75rem;text-wrap:balance}
+h2{font-size:1.375rem;line-height:1.25;font-weight:650;letter-spacing:-.01em;margin:0 0 .4rem;text-wrap:balance}
+h3{font-size:1rem;font-weight:620;margin:0 0 .15rem}
+.intro{color:var(--ink2);margin:0;max-width:68ch}
+.links{margin-top:.9rem;display:flex;gap:1.25rem;flex-wrap:wrap;font-size:.9375rem}
+
+.findings{list-style:none;margin:2.25rem 0 0;padding:0;border-top:1px solid var(--rule)}
+.findings li{display:grid;grid-template-columns:10.5rem 1fr;gap:1.25rem;padding:.95rem 0;border-bottom:1px solid var(--rule);align-items:baseline}
+.findings .n{font-size:1.375rem;font-weight:650;letter-spacing:-.01em;white-space:nowrap}
+.findings p{margin:0;color:var(--ink2);max-width:66ch}
+.findings p b{color:var(--ink)}
+
+section{margin-top:3.5rem;padding-top:1.75rem;border-top:1px solid var(--rule)}
+.lede{color:var(--ink2);margin:0 0 1.25rem;max-width:70ch}
+
+.toolbar{display:grid;grid-template-columns:auto auto 1fr 1fr;gap:1rem 1.75rem;align-items:end;background:var(--panel);border-radius:10px;padding:1rem 1.1rem}
+.ctl{min-width:0}
+.ctl .lab{display:flex;justify-content:space-between;gap:.75rem;font-size:.8125rem;font-weight:600;color:var(--ink2);margin-bottom:.45rem}
+.ctl output{color:var(--ink);font-weight:650}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:8px;background:var(--bg);padding:2px;gap:2px}
+.seg button{border:0;background:none;color:var(--ink2);padding:.38rem .8rem;font:inherit;font-size:.9375rem;border-radius:6px;cursor:pointer;transition:background-color .15s ease-out,color .15s ease-out}
+.seg button:hover{color:var(--ink);background:var(--panel)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff;font-weight:600}
+input[type=range]{width:100%;accent-color:var(--accent);margin:.35rem 0 0;height:1.4rem;cursor:pointer}
+
+.readout{display:flex;flex-wrap:wrap;gap:.5rem 2.25rem;margin:1.4rem 0 .35rem;align-items:baseline}
+.readout div{display:flex;flex-direction:column}
+.readout .v{font-size:1.75rem;font-weight:650;letter-spacing:-.015em;line-height:1.15}
+.readout .l{font-size:.8125rem;color:var(--ink2)}
+.sentence{margin:.6rem 0 0;max-width:72ch;color:var(--ink2)}
+.sentence b{color:var(--ink)}
+
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:2.25rem;margin-top:1.75rem}
+.chart .sub{font-size:.875rem;color:var(--ink2);margin:0 0 .6rem;max-width:56ch}
+.chart svg{display:block;width:100%;overflow:visible;touch-action:pan-y}
+.legend{display:flex;gap:1.1rem;flex-wrap:wrap;font-size:.8125rem;color:var(--ink2);margin-top:.35rem}
+.legend i{display:inline-block;width:.9rem;height:3px;border-radius:2px;vertical-align:middle;margin-right:.4rem}
+.axis text{fill:var(--ink3);font-size:11px}
+.axis line{stroke:var(--rule)}
+.gridline{stroke:var(--grid)}
+details{margin-top:.75rem;font-size:.875rem}
+summary{cursor:pointer;color:var(--accent-ink);width:max-content}
+summary:hover{text-decoration:underline;text-underline-offset:3px}
+
+.tip{position:fixed;pointer-events:none;background:var(--bg);color:var(--ink);border:1px solid var(--rule);border-radius:8px;padding:.45rem .6rem;font-size:.8125rem;line-height:1.45;box-shadow:var(--tip-shadow);opacity:0;transition:opacity .1s ease-out;z-index:10;white-space:nowrap}
+.tablewrap{overflow-x:auto;margin-top:1rem}
+table{width:100%;min-width:42rem;border-collapse:collapse;font-size:.875rem}
+#cvTable{min-width:0}
+th{text-align:left;font-weight:600;color:var(--ink2);border-bottom:1px solid var(--ink3);padding:.45rem .6rem;font-size:.8125rem;white-space:nowrap}
+td{border-bottom:1px solid var(--rule);padding:.45rem .6rem}
+td.num,th.num{text-align:right}
+tbody tr:hover td{background:var(--panel)}
+.notes{color:var(--ink2);padding-left:1.1rem;margin:0;max-width:72ch}
+.notes li{margin:.45rem 0}
+.notes b{color:var(--ink)}
+footer{color:var(--ink3);font-size:.8125rem;margin-top:3rem}
+code{font-size:.9em}
+@media (max-width:860px){.toolbar{grid-template-columns:1fr 1fr}.charts{grid-template-columns:1fr}}
+@media (max-width:560px){.findings li{grid-template-columns:1fr;gap:.2rem}.toolbar{grid-template-columns:1fr}h1{font-size:1.625rem}.readout .v{font-size:1.5rem}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>How much can batteries lower Ontario's peak demand?</h1>
+  <p class="intro" id="intro"></p>
+  <nav class="links" id="links" aria-label="Project links"></nav>
+</header>
+
+<ul class="findings" id="findings"></ul>
+
+<section id="explorer" aria-labelledby="explorer-h">
+  <h2 id="explorer-h">Try a battery fleet</h2>
+  <p class="lede">Pick a fleet and see how far it lowers the annual net peak (demand minus wind and solar). Each result comes from running the battery model over a full year of IESO hourly data.</p>
+  <div class="toolbar" role="group" aria-label="Fleet settings">
+    <div class="ctl"><div class="lab" id="scen-l">Load year</div><div class="seg" id="scen" role="group" aria-labelledby="scen-l"></div></div>
+    <div class="ctl"><div class="lab" id="dur-l">Battery duration</div><div class="seg" id="dur" role="group" aria-labelledby="dur-l"></div></div>
+    <div class="ctl"><label class="lab" for="size">Storage installed <output id="sizeVal" for="size"></output></label><input id="size" type="range" min="250" max="6000" step="250"></div>
+    <div class="ctl"><label class="lab" for="solar">Extra solar <output id="solarVal" for="solar"></output></label><input id="solar" type="range" min="0" max="5" step="1"></div>
+  </div>
+  <div class="readout" id="result" aria-live="polite"></div>
+  <p class="sentence" id="sentence"></p>
+  <div class="charts">
+    <div class="chart">
+      <h3>Capacity value by fleet size</h3>
+      <p class="sub">Peak reduction as a share of rated power. At 100%, each MW installed lowers the peak by a full MW.</p>
+      <div id="cvChart" role="img" aria-label="Capacity value of 2, 4 and 8 hour storage as fleet size grows"></div>
+      <div class="legend" id="cvLegend"></div>
+      <details><summary>Show as a table</summary><div class="tablewrap"><table id="cvTable"></table></div></details>
+    </div>
+    <div class="chart">
+      <h3 id="pdTitle">Peak day</h3>
+      <p class="sub">Net load by hour on the year's peak day, with the selected fleet discharging through the peak and recharging in the low hours.</p>
+      <div id="pdChart" role="img" aria-label="Hourly net load on the peak day, with and without storage"></div>
+      <div class="legend" id="pdLegend"></div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="hist-h">
+  <h2 id="hist-h">Ontario's peak is arriving later</h2>
+  <p class="lede" id="histLede"></p>
+  <div class="charts">
+    <div class="chart"><h3>Annual peak Ontario Demand</h3><p class="sub">Gigawatts, from IESO Hourly Demand Reports</p><div id="hPeak" role="img" aria-label="Annual peak demand by year"></div></div>
+    <div class="chart"><h3>Hour of the annual peak</h3><p class="sub">Hour ending, Eastern Standard Time</p><div id="hHour" role="img" aria-label="Hour of the annual peak by year"></div></div>
+  </div>
+</section>
+
+<section aria-labelledby="n1-h">
+  <h2 id="n1-h">Storage eases transmission stress, but doesn't replace wires</h2>
+  <p class="lede" id="n1Lede"></p>
+  <div class="chart"><div id="n1Chart" role="img" aria-label="Failing contingencies by load level, with and without a battery"></div><div class="legend" id="n1Legend"></div></div>
+  <div class="tablewrap"><table id="n1Table"></table></div>
+</section>
+
+<section aria-labelledby="m-h">
+  <h2 id="m-h">Data and method</h2>
+  <ul class="notes" id="notes"></ul>
+</section>
+<footer>Built in Python (pandas, pandapower) from IESO public reports.</footer>
+</div>
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script>
+const D = /*__DATA__*/null;
+const $ = id => document.getElementById(id);
+const fmt = (v, d=0) => Number(v).toLocaleString("en-CA", {minimumFractionDigits:d, maximumFractionDigits:d});
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const tip = $("tip");
+function showTip(html, ev){ tip.innerHTML = html; tip.style.opacity = 1;
+  const r = tip.getBoundingClientRect(); let x = ev.clientX + 14, y = ev.clientY - r.height - 12;
+  if (x + r.width > innerWidth - 8) x = ev.clientX - r.width - 14; if (y < 8) y = ev.clientY + 18;
+  tip.style.left = x + "px"; tip.style.top = y + "px"; }
+function hideTip(){ tip.style.opacity = 0; }
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs={}, parent){ const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+function niceTicks(lo, hi, n=5){ const span = hi - lo, step0 = span / n, mag = Math.pow(10, Math.floor(Math.log10(step0)));
+  const step = [1,2,2.5,5,10].map(m => m*mag).find(s => s >= step0); const t = []; for (let v = Math.ceil(lo/step)*step; v <= hi + 1e-9; v += step) t.push(+v.toFixed(6)); return t; }
+
+/* Line chart with a crosshair tooltip. Works with mouse and touch. */
+function lineChart(host, {x, series, yMin, yMax, xTicks, yFmt=v=>v, xFmt=v=>v, tipFmt, marker, height=240}){
+  host.innerHTML = ""; const W = host.clientWidth || 480, H = height, m = {l:46, r:10, t:10, b:26};
+  const svg = el("svg", {viewBox:`0 0 ${W} ${H}`, height:H}, host);
+  const xs = v => m.l + (v - x[0]) / (x[x.length-1] - x[0]) * (W - m.l - m.r);
+  const ys = v => H - m.b - (v - yMin) / (yMax - yMin) * (H - m.t - m.b);
+  const g = el("g", {class:"axis"}, svg);
+  niceTicks(yMin, yMax, 4).forEach(t => { el("line", {x1:m.l, x2:W-m.r, y1:ys(t), y2:ys(t), class:"gridline"}, g);
+    el("text", {x:m.l-8, y:ys(t)+4, "text-anchor":"end"}, g).textContent = yFmt(t); });
+  const xt = (xTicks || x).filter((_, i, a) => W >= 440 || i % 2 === 0 || i === a.length - 1);
+  xt.forEach(t => { el("text", {x:xs(t), y:H-7, "text-anchor":"middle"}, g).textContent = xFmt(t); });
+  el("line", {x1:m.l, x2:W-m.r, y1:H-m.b, y2:H-m.b}, g);
+  series.forEach(s => { const d = s.y.map((v,i) => `${i?"L":"M"}${xs(x[i]).toFixed(1)},${ys(v).toFixed(1)}`).join("");
+    el("path", {d, fill:"none", stroke:s.color, "stroke-width":2, "stroke-linejoin":"round", "stroke-linecap":"round"}, svg); });
+  if (marker) el("circle", {cx:xs(marker.x), cy:ys(marker.y), r:5.5, fill:marker.color, stroke:css("--bg"), "stroke-width":2.5}, svg);
+  const cross = el("line", {y1:m.t, y2:H-m.b, stroke:css("--ink3"), "stroke-width":1, opacity:0}, svg);
+  const dots = series.map(s => el("circle", {r:4, fill:s.color, stroke:css("--bg"), "stroke-width":2, opacity:0}, svg));
+  const hit = el("rect", {x:m.l, y:0, width:W-m.l-m.r, height:H-m.b, fill:"transparent"}, svg);
+  const move = ev => { const p = ev.touches ? ev.touches[0] : ev, r = svg.getBoundingClientRect(), px = (p.clientX - r.left) * W / r.width;
+    let i = 0, best = 1e9; x.forEach((v,j) => { const d = Math.abs(xs(v) - px); if (d < best) { best = d; i = j; } });
+    cross.setAttribute("x1", xs(x[i])); cross.setAttribute("x2", xs(x[i])); cross.setAttribute("opacity", 1);
+    dots.forEach((c,k) => { c.setAttribute("cx", xs(x[i])); c.setAttribute("cy", ys(series[k].y[i])); c.setAttribute("opacity", 1); });
+    showTip(tipFmt(i), p); };
+  const leave = () => { cross.setAttribute("opacity", 0); dots.forEach(c => c.setAttribute("opacity", 0)); hideTip(); };
+  hit.addEventListener("mousemove", move); hit.addEventListener("touchmove", move, {passive:true}); hit.addEventListener("touchstart", move, {passive:true});
+  hit.addEventListener("mouseleave", leave); hit.addEventListener("touchend", leave);
+}
+function legend(host, items){ host.innerHTML = items.map(i => `<span><i style="background:${i.color}"></i>${i.name}</span>`).join(""); }
+
+/* Battery model: same algorithm as src/storage.py shave_day */
+function fillLevel(load, mask, energy, p){ let lo = Infinity, hi = -Infinity; load.forEach((v,i) => { if (mask[i]) { lo = Math.min(lo, v); hi = Math.max(hi, v); } }); hi += p;
+  for (let k = 0; k < 60; k++) { const v = (lo + hi) / 2; let s = 0; load.forEach((l,i) => { if (mask[i]) s += Math.min(Math.max(v - l, 0), p); }); if (s < energy) lo = v; else hi = v; } return hi; }
+function shaveDay(load, p, e, rte){ const peak = Math.max(...load);
+  const schedule = t => { const dis = load.map(v => Math.min(Math.max(v - t, 0), p)); const used = dis.reduce((a,b) => a+b, 0);
+    if (used > e + 1e-6) return null; const idle = dis.map(v => v === 0); let ch = load.map(() => 0);
+    if (used > 0) { if (!idle.some(Boolean)) return null; const v = fillLevel(load, idle, used / rte, p);
+      ch = load.map((l,i) => idle[i] ? Math.min(Math.max(v - l, 0), p) : 0); if (ch.reduce((a,b) => a+b, 0) < used / rte - 1e-3) return null; }
+    const nw = load.map((l,i) => l - dis[i] + ch[i]); return Math.max(...nw) <= t + 1e-3 ? nw : null; };
+  let lo = Math.max(peak - p, Math.min(...load)), hi = peak, best = load.slice();
+  for (let k = 0; k < 50; k++) { const t = (lo + hi) / 2, s = schedule(t); if (s === null) lo = t; else { hi = t; best = s; } } return best; }
+
+/* Precomputed results lookup */
+const G = D.grid, idx = {};
+G.scenario.forEach((s,i) => { idx[`${s}|${G.solar_gw[i]}|${G.duration_h[i]}|${G.power_mw[i]}`] = i; });
+const row = (s, sol, h, p) => { const i = idx[`${s}|${sol}|${h}|${p}`]; return {base:G.base_peak_mw[i], newPeak:G.new_peak_mw[i], red:G.reduction_mw[i]}; };
+const SIZES = [...new Set(G.power_mw)].sort((a,b) => a-b);
+const SCEN = [...new Set(G.scenario)], DUR = [...new Set(G.duration_h)].sort((a,b) => a-b);
+const DCOL = {2:"--s3", 4:"--s1", 8:"--s2"};
+const state = {scen:SCEN[0], dur:4, size:2000, solar:0};
+const yearOf = s => s.startsWith("2035") ? "2035" : String(D.year);
+
+function seg(host, opts, key, label){ host.innerHTML = ""; opts.forEach(o => { const b = document.createElement("button"); b.type = "button"; b.textContent = label(o);
+  b.setAttribute("aria-pressed", state[key] === o); b.onclick = () => { state[key] = o; seg(host, opts, key, label); renderExplorer(); }; host.appendChild(b); }); }
+
+function renderExplorer(){
+  $("sizeVal").textContent = `${fmt(state.size/1000, 2)} GW`; $("solarVal").textContent = state.solar ? `+${state.solar} GW` : "none";
+  const r = row(state.scen, state.solar, state.dur, state.size), cv = 100 * r.red / state.size;
+  $("result").innerHTML = [[`${fmt(r.red)} MW`, "Lower annual net peak"], [`${fmt(cv)}%`, "Capacity value"], [`${fmt(r.newPeak)} MW`, `New net peak, from ${fmt(r.base)} MW`]]
+    .map(([v,l]) => `<div><span class="v">${v}</span><span class="l">${l}</span></div>`).join("");
+  $("sentence").innerHTML = `With ${yearOf(state.scen)} load${state.solar ? ` and ${state.solar} GW of extra solar` : ""}, <b>${fmt(state.size/1000,2)} GW of ${state.dur}-hour storage</b> lowers the annual net peak by <b>${fmt(r.red)} MW</b>, ` +
+    (cv > 99.5 ? "its full rating." : `${fmt(cv)}% of its rating. Past this size, the high-load period lasts longer than the batteries' stored energy can cover.`);
+  const series = DUR.map(h => ({name:`${h}-hour`, color:css(DCOL[h]), y:SIZES.map(p => 100 * row(state.scen, state.solar, h, p).red / p)}));
+  lineChart($("cvChart"), {x:SIZES.map(p => p/1000), series, yMin:0, yMax:105, xTicks:[0.25,1,2,3,4,5,6], yFmt:v => `${v}%`, xFmt:v => `${v} GW`,
+    marker:{x:state.size/1000, y:cv, color:css(DCOL[state.dur])},
+    tipFmt:i => `<b>${fmt(SIZES[i]/1000,2)} GW installed</b><br>` + series.map(s => `${s.name}: <b>${fmt(s.y[i])}%</b>`).join("<br>")});
+  legend($("cvLegend"), series);
+  $("cvTable").innerHTML = `<thead><tr><th>Installed</th>${DUR.map(h => `<th class="num">${h}-hour</th>`).join("")}</tr></thead><tbody>` +
+    SIZES.map((p,i) => `<tr><td>${fmt(p/1000,2)} GW</td>${series.map(s => `<td class="num">${fmt(s.y[i])}%</td>`).join("")}</tr>`).join("") + "</tbody>";
+  const P = D.peakDay, g = state.scen.startsWith("2035") ? D.growth2035 : 1;
+  const net = P.demand.map((d,i) => d * g - P.wind[i] - P.solar[i] - P.solarPerMW[i] * state.solar * 1000);
+  const shaved = shaveDay(net, state.size, state.size * state.dur, D.rte);
+  const hrs = net.map((_,i) => i + 1), all = net.concat(shaved), lo = Math.floor(Math.min(...all)/2000)*2, hi = Math.ceil(Math.max(...all)/2000)*2;
+  $("pdTitle").textContent = `Peak day, ${P.date}${g > 1 ? " (scaled to 2035)" : ""}`;
+  const ps = [{name:"Net load", color:css("--s1"), y:net.map(v => v/1000)}, {name:`With ${fmt(state.size/1000,2)} GW of ${state.dur}-hour storage`, color:css("--s2"), y:shaved.map(v => v/1000)}];
+  lineChart($("pdChart"), {x:hrs, series:ps, yMin:lo, yMax:hi, xTicks:[1,5,9,13,17,21,24], yFmt:v => `${v} GW`, xFmt:v => `${v}:00`,
+    tipFmt:i => `<b>Hour ending ${hrs[i]}:00 EST</b><br>Net load: <b>${fmt(net[i])} MW</b><br>With storage: <b>${fmt(shaved[i])} MW</b>`});
+  legend($("pdLegend"), ps);
+}
+
+function renderStatic(){
+  const pk = D.peak, ph = D.phShift, base = SCEN[0];
+  $("intro").innerHTML = `A study of Ontario's electricity peak using IESO's public data: hourly demand back to ${D.history.year[0]} and hourly output of ${D.data.generators} transmission-connected generators in ${D.year}, with load growth from IESO's 2026 Annual Planning Outlook.`;
+  $("links").innerHTML = (D.report ? `<a href="Study_Report.pdf">Full study report (PDF)</a>` : "") + `<a href="#" id="repoLink">Code on GitHub</a>`;
+  const repo = D.repo || (location.hostname.endsWith("github.io") ? `https://github.com/${location.hostname.split(".")[0]}/${location.pathname.split("/")[1]}` : null);
+  if (repo) $("repoLink").href = repo; else $("repoLink").remove();
+  const n35 = D.n1.filter(r => r.scenario.startsWith("2035")), no = n35.find(r => r.battery === "none"), yes = n35.find(r => r.battery !== "none");
+  const full4 = SIZES.filter(p => 100 * row(base, 0, 4, p).red / p >= 95).pop(), r3 = row(base, 0, 4, 3000), s3 = row(base, 2, 4, 3000);
+  $("findings").innerHTML = [
+    [`${fmt(pk.mw)} MW`, `<b>Ontario's ${D.year} peak</b>, on ${pk.date.replace(/, \d{4}/, "")} in the hour ending ${pk.he}:00 EST. This matches IESO's published figure. Wind and solar supplied ${fmt(pk.wind_at_peak + pk.solar_at_peak)} MW at that hour, leaving a net peak of ${fmt(pk.net_mw)} MW.`],
+    [`${fmt(full4/1000,1)} GW`, `<b>The most 4-hour storage that counts in full.</b> Up to this size, each MW installed lowers the peak by a full MW. Past it, returns fall: 3 GW lowers the peak by ${fmt(r3.red)} MW, only ${fmt(100*r3.red/3000)}% of its rating, because the summer peak is a long plateau rather than a short spike.`],
+    [`${fmt(100*r3.red/3000)}% → ${fmt(100*s3.red/3000)}%`, `<b>Solar makes storage worth more.</b> Adding 2 GW of solar narrows the evening peak, lifting the value of 3 GW of 4-hour storage.`],
+    [`${no.violating} → ${yes.violating}`, `<b>Failing N-1 contingencies</b> on a test grid at 2035 load, before and after adding a battery at the best site. The worst overload remains, so it still needs a transmission upgrade.`],
+  ].map(([n, t]) => `<li><span class="n">${n}</span><p>${t}</p></li>`).join("");
+  seg($("scen"), SCEN, "scen", yearOf);
+  seg($("dur"), DUR, "dur", h => `${h} h`);
+  $("size").value = state.size; $("solar").value = state.solar;
+  $("size").oninput = e => { state.size = +e.target.value; renderExplorer(); };
+  $("solar").oninput = e => { state.solar = +e.target.value; renderExplorer(); };
+  const H = D.history;
+  $("histLede").textContent = `The annual peak usually comes on a hot summer afternoon, but it has moved later in the day. The median peak fell in the hour ending ${ph.early_median_he}:00 EST over ${ph.early_years[0]}-${ph.early_years[1]}, and ${ph.late_median_he}:00 over ${ph.late_years[0]}-${ph.late_years[1]}. In ${D.year} it was ${pk.he}:00. Later peaks get less help from solar, which is part of why storage matters.`;
+  const yt = H.year.filter(y => y % 4 === 1);
+  lineChart($("hPeak"), {x:H.year, series:[{name:"Peak", color:css("--s1"), y:H.peak.map(v => v/1000)}], yMin:21, yMax:28, xTicks:yt, yFmt:v => `${v} GW`, height:200,
+    tipFmt:i => `<b>${H.year[i]}</b><br>Peak: <b>${fmt(H.peak[i])} MW</b><br>${H.date[i]}, ${H.season[i].toLowerCase()}`});
+  lineChart($("hHour"), {x:H.year, series:[{name:"Hour", color:css("--s2"), y:H.he}], yMin:13, yMax:20, xTicks:yt, yFmt:v => `${v}:00`, height:200,
+    tipFmt:i => `<b>${H.year[i]}</b><br>Hour ending <b>${H.he[i]}:00</b> EST<br>${H.season[i]} peak`});
+  const scen = [...new Set(D.n1.map(r => r.scenario))];
+  $("n1Lede").textContent = `Ontario's transmission model isn't public, so this uses the IEEE 39-bus test system with load grown at the APO rate. Every line and network transformer is taken out one at a time, 38 cases per load level. A ${D.network.battery_mw} MW battery was tried at every load bus, and bus ${D.network.best_bus} worked best. At 2035 load it cuts failing cases from ${no.violating} to ${yes.violating} and removes the case with no solution, but the overload after a ${yes.worst_contingency} outage comes from the network's layout, not total load, so it needs a transmission fix.`;
+  barChart($("n1Chart"), scen);
+  $("n1Table").innerHTML = `<thead><tr><th>Load level</th><th>Battery</th><th class="num">Output</th><th class="num">Failing of 38</th><th class="num">Overload</th><th class="num">Low voltage</th><th class="num">No solution</th><th class="num">Worst loading</th><th class="num">Lowest voltage</th></tr></thead><tbody>` +
+    D.n1.map(r => `<tr><td>${r.scenario} (${fmt(r.system_load_mw)} MW)</td><td>${r.battery === "none" ? "None" : r.battery}</td><td class="num">${fmt(r.dispatch_mw)} MW</td><td class="num">${r.violating}</td><td class="num">${r.overload_cases}</td><td class="num">${r.low_voltage_cases}</td><td class="num">${r.unsolved}</td><td class="num">${fmt(r.worst_loading_pct)}%</td><td class="num">${fmt(r.lowest_v_pu,3)} p.u.</td></tr>`).join("") + "</tbody>";
+  $("notes").innerHTML = [
+    `<b>Data.</b> IESO Hourly Demand Report (${D.history.year[0]}-${D.year}) and Generator Output and Capability Month Report (${D.year}), from reports-public.ieso.ca. The ${D.year} peak of ${fmt(pk.mw)} MW and ${fmt(pk.energy_twh,1)} TWh of demand match IESO's 2025 Year in Review.`,
+    ...(D.data.missing_days.length ? [`<b>Coverage.</b> Generator output was unavailable for ${D.data.missing_days.length} days (${D.data.missing_days.join(", ")}), none near the summer peak.`] : []),
+    `<b>Battery model.</b> Each day the fleet discharges to lower that day's peak as far as its power and energy allow, then recharges in the lowest hours at ${fmt(D.rte*100)}% round-trip efficiency without creating a new peak. It assumes perfect daily foresight, so the results are an upper bound.`,
+    `<b>Capacity value</b> here is peak reduction per MW installed, a simple stand-in for the probabilistic methods IESO uses for resource adequacy.`,
+    `<b>2035 load</b> scales ${D.year}'s hourly shape by the APO reference growth rate (×${fmt(D.growth2035,3)}), so it doesn't capture the faster winter growth the APO expects. <b>Extra solar</b> follows the ${D.year} hourly profile of Ontario's transmission-connected solar fleet.`,
+  ].map(s => `<li>${s}</li>`).join("");
+}
+
+function barChart(host, scen){
+  host.innerHTML = ""; const W = host.clientWidth || 600, H = 230, m = {l:34, r:8, t:18, b:42};
+  const svg = el("svg", {viewBox:`0 0 ${W} ${H}`, height:H}, host), max = 40;
+  const ys = v => H - m.b - v / max * (H - m.t - m.b), g = el("g", {class:"axis"}, svg);
+  [0,10,20,30,40].forEach(t => { el("line", {x1:m.l, x2:W-m.r, y1:ys(t), y2:ys(t), class:"gridline"}, g); el("text", {x:m.l-8, y:ys(t)+4, "text-anchor":"end"}, g).textContent = t; });
+  const bw = (W - m.l - m.r) / scen.length, w = Math.min(54, bw * 0.3), cols = [css("--s1"), css("--s2")];
+  scen.forEach((s, i) => { const rs = D.n1.filter(r => r.scenario === s), cx = m.l + bw * (i + 0.5);
+    rs.forEach((r, k) => { const x = cx + (k ? 1 : -w - 1), top = ys(r.violating), h = H - m.b - top, rr = Math.min(4, h);
+      el("path", {d:`M${x},${H-m.b} V${top+rr} Q${x},${top} ${x+rr},${top} H${x+w-rr} Q${x+w},${top} ${x+w},${top+rr} V${H-m.b} Z`, fill:cols[k]}, svg);
+      el("text", {x:x + w/2, y:top - 6, "text-anchor":"middle", fill:css("--ink"), "font-size":12, "font-weight":600}, svg).textContent = r.violating;
+      const hit = el("rect", {x:x - 2, y:m.t, width:w + 4, height:H - m.t - m.b, fill:"transparent"}, svg);
+      const show = ev => showTip(`<b>${s}</b>, ${r.battery === "none" ? "no battery" : r.battery}<br>Failing cases: <b>${r.violating}</b> of 38<br>Worst loading: <b>${fmt(r.worst_loading_pct)}%</b><br>Lowest voltage: <b>${fmt(r.lowest_v_pu,3)} p.u.</b>`, ev.touches ? ev.touches[0] : ev);
+      hit.addEventListener("mousemove", show); hit.addEventListener("touchstart", show, {passive:true}); hit.addEventListener("mouseleave", hideTip); hit.addEventListener("touchend", hideTip); });
+    el("text", {x:cx, y:H - 22, "text-anchor":"middle", fill:css("--ink2"), "font-size":12}, svg).textContent = s;
+    el("text", {x:cx, y:H - 7, "text-anchor":"middle", fill:css("--ink3"), "font-size":11}, svg).textContent = `${fmt(rs[0].system_load_mw)} MW load`; });
+  el("line", {x1:m.l, x2:W-m.r, y1:H-m.b, y2:H-m.b, stroke:css("--rule")}, svg);
+  legend($("n1Legend"), [{name:"No battery", color:cols[0]}, {name:`${D.network.battery_mw} MW battery at bus ${D.network.best_bus}`, color:cols[1]}]);
+}
+
+renderStatic(); renderExplorer();
+let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { renderStatic(); renderExplorer(); }, 150); });
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { renderStatic(); renderExplorer(); });
+</script>
+</body>
+</html>

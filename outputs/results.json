@@ -1,0 +1,379 @@
+{
+  "year": 2025,
+  "downloaded_from_ieso": [],
+  "data": {
+    "sources": [
+      "PUB_Demand_2025.csv",
+      "12 x PUB_GenOutputCapabilityMonth_2025MM.csv"
+    ],
+    "hours": 8615,
+    "missing_hours": 144,
+    "missing_days": [
+      "2025-03-27",
+      "2025-03-28",
+      "2025-03-29",
+      "2025-03-30",
+      "2025-03-31",
+      "2025-06-30"
+    ],
+    "generators": 187
+  },
+  "demand_full_year": {
+    "peak_mw": 24862.0,
+    "peak_time": "2025-06-24 18:00:00",
+    "peak_hour_ending": 19,
+    "top_n": 100,
+    "top_n_summer_share": 1.0,
+    "top_n_hour_ending_median": 17.0,
+    "hours_within_5pct": 53,
+    "hours_within_10pct": 184,
+    "energy_twh": 145.587496,
+    "load_factor": 0.6685493764603331
+  },
+  "fuel_twh": {
+    "NUCLEAR": 76.55,
+    "HYDRO": 36.33,
+    "GAS": 31.88,
+    "WIND": 13.93,
+    "SOLAR": 0.66,
+    "BIOFUEL": 0.29
+  },
+  "demand": {
+    "peak_mw": 24862.0,
+    "peak_time": "2025-06-24 18:00:00",
+    "peak_hour_ending": 19,
+    "top_n": 100,
+    "top_n_summer_share": 1.0,
+    "top_n_hour_ending_median": 17.0,
+    "hours_within_5pct": 53,
+    "hours_within_10pct": 184,
+    "energy_twh": 143.269948,
+    "load_factor": 0.6689039481688193
+  },
+  "net_load": {
+    "peak_mw": 24216.0,
+    "peak_time": "2025-06-24 18:00:00",
+    "peak_hour_ending": 19,
+    "top_n": 100,
+    "top_n_summer_share": 1.0,
+    "top_n_hour_ending_median": 17.0,
+    "hours_within_5pct": 19,
+    "hours_within_10pct": 145,
+    "energy_twh": 128.683261,
+    "load_factor": 0.6168284098558897
+  },
+  "at_peak": {
+    "Ontario Demand": 24862.0,
+    "WIND": 607.0,
+    "SOLAR": 39.0,
+    "Net Load": 24216.0
+  },
+  "peak_hour_shift": {
+    "early_years": [
+      2003,
+      2012
+    ],
+    "early_median_he": 16.0,
+    "late_years": [
+      2020,
+      2025
+    ],
+    "late_median_he": 17.0
+  },
+  "storage": {
+    "rte": 0.85,
+    "full_value_limit_mw": {
+      "2h": 750.0,
+      "4h": 1500.0,
+      "8h": 2750.0
+    },
+    "full_value_limit_mw_2035": {
+      "2h": 1000.0,
+      "4h": 1750.0,
+      "8h": 3250.0
+    },
+    "examples_2025": {
+      "2h_1000MW": {
+        "reduction_mw": 920.2000001999986,
+        "capacity_value_pct": 92.02000001999986
+      },
+      "2h_2000MW": {
+        "reduction_mw": 1246.3750001249973,
+        "capacity_value_pct": 62.318750006249864
+      },
+      "2h_3000MW": {
+        "reduction_mw": 1452.7272728181815,
+        "capacity_value_pct": 48.42424242727272
+      },
+      "2h_5000MW": {
+        "reduction_mw": 1800.83333341666,
+        "capacity_value_pct": 36.0166666683332
+      },
+      "4h_1000MW": {
+        "reduction_mw": 1000.0,
+        "capacity_value_pct": 100.0
+      },
+      "4h_2000MW": {
+        "reduction_mw": 1634.1666667499994,
+        "capacity_value_pct": 81.70833333749997
+      },
+      "4h_3000MW": {
+        "reduction_mw": 1967.5000000833315,
+        "capacity_value_pct": 65.58333333611105
+      },
+      "4h_5000MW": {
+        "reduction_mw": 2616.6153846923044,
+        "capacity_value_pct": 52.33230769384609
+      },
+      "8h_1000MW": {
+        "reduction_mw": 1000.0,
+        "capacity_value_pct": 100.0
+      },
+      "8h_2000MW": {
+        "reduction_mw": 2000.0,
+        "capacity_value_pct": 100.0
+      },
+      "8h_3000MW": {
+        "reduction_mw": 2723.5673623188486,
+        "capacity_value_pct": 90.78557874396162
+      },
+      "8h_5000MW": {
+        "reduction_mw": 3217.670977443613,
+        "capacity_value_pct": 64.35341954887227
+      }
+    },
+    "examples_2035": {
+      "2h_1000MW": {
+        "reduction_mw": 1000.0,
+        "capacity_value_pct": 100.0
+      },
+      "2h_2000MW": {
+        "reduction_mw": 1349.3752139005192,
+        "capacity_value_pct": 67.46876069502596
+      },
+      "2h_3000MW": {
+        "reduction_mw": 1578.6175801299214,
+        "capacity_value_pct": 52.62058600433072
+      },
+      "2h_5000MW": {
+        "reduction_mw": 1948.5366113520067,
+        "capacity_value_pct": 38.97073222704014
+      },
+      "4h_1000MW": {
+        "reduction_mw": 1000.0,
+        "capacity_value_pct": 100.0
+      },
+      "4h_2000MW": {
+        "reduction_mw": 1766.7184295338266,
+        "capacity_value_pct": 88.33592147669133
+      },
+      "4h_3000MW": {
+        "reduction_mw": 2116.339845716466,
+        "capacity_value_pct": 70.5446615238822
+      },
+      "4h_5000MW": {
+        "reduction_mw": 2783.00651238313,
+        "capacity_value_pct": 55.6601302476626
+      },
+      "8h_1000MW": {
+        "reduction_mw": 1000.0,
+        "capacity_value_pct": 100.0
+      },
+      "8h_2000MW": {
+        "reduction_mw": 2000.0,
+        "capacity_value_pct": 100.0
+      },
+      "8h_3000MW": {
+        "reduction_mw": 2999.9999999999964,
+        "capacity_value_pct": 99.99999999999989
+      },
+      "8h_5000MW": {
+        "reduction_mw": 3663.1423087965195,
+        "capacity_value_pct": 73.26284617593039
+      }
+    },
+    "growth_factor_2035": 1.2309982084321769,
+    "net_peak_2035_mw": 29959.07745804078,
+    "shaved_2gw_4h_new_peak": 22581.83333325,
+    "shaved_2gw_4h_new_peak_time": "2025-06-24 09:00:00"
+  },
+  "solar_sensitivity": [
+    {
+      "extra_solar_gw": 0.0,
+      "net_peak_mw": 24216.0,
+      "peak_he": 19,
+      "top100_median_he": 17.0,
+      "4h_1GW_value_pct": 100.0,
+      "4h_2GW_value_pct": 81.70833333749997,
+      "4h_3GW_value_pct": 65.58333333611105,
+      "4h_4GW_value_pct": 57.5208333354166
+    },
+    {
+      "extra_solar_gw": 2.5,
+      "net_peak_mw": 23993.397260273974,
+      "peak_he": 19,
+      "top100_median_he": 19.0,
+      "4h_1GW_value_pct": 100.0,
+      "4h_2GW_value_pct": 100.0,
+      "4h_3GW_value_pct": 95.23891426042623,
+      "4h_4GW_value_pct": 82.47114985698427
+    },
+    {
+      "extra_solar_gw": 5.0,
+      "net_peak_mw": 23770.794520547945,
+      "peak_he": 19,
+      "top100_median_he": 19.5,
+      "4h_1GW_value_pct": 99.99999999999963,
+      "4h_2GW_value_pct": 99.99999999999983,
+      "4h_3GW_value_pct": 99.99999999999989,
+      "4h_4GW_value_pct": 91.34013984330758
+    }
+  ],
+  "solar_fleet_peak_avail_mw": 438.0,
+  "network": {
+    "scenarios": {
+      "Base load": 1.0,
+      "2030 growth": 1.11,
+      "2035 growth": 1.231
+    },
+    "battery_mw": 500,
+    "best_bus": 3,
+    "worst_bus": 31,
+    "sites": [
+      {
+        "bus": 3,
+        "pp_index": 2,
+        "severity": 612.7448828728233,
+        "n_violating_contingencies": 21,
+        "worst_loading": 159.93780828711724
+      },
+      {
+        "bus": 18,
+        "pp_index": 17,
+        "severity": 614.6330165890365,
+        "n_violating_contingencies": 23,
+        "worst_loading": 159.76556211324453
+      },
+      {
+        "bus": 27,
+        "pp_index": 26,
+        "severity": 660.2989952651152,
+        "n_violating_contingencies": 24,
+        "worst_loading": 159.8682138826999
+      },
+      {
+        "bus": 15,
+        "pp_index": 14,
+        "severity": 669.4224179590669,
+        "n_violating_contingencies": 25,
+        "worst_loading": 159.78418473429736
+      },
+      {
+        "bus": 16,
+        "pp_index": 15,
+        "severity": 683.2331338611349,
+        "n_violating_contingencies": 25,
+        "worst_loading": 159.7549363615265
+      }
+    ],
+    "table": [
+      {
+        "scenario": "Base load",
+        "load_factor": 1.0,
+        "battery": "none",
+        "dispatch_mw": 0.0,
+        "system_load_mw": 6254.23,
+        "contingencies": 38,
+        "violating": 11,
+        "overload_cases": 10,
+        "low_voltage_cases": 1,
+        "unsolved": 0,
+        "worst_loading_pct": 157.5360721733789,
+        "lowest_v_pu": 0.9368845267107578,
+        "worst_contingency": "line 21-22",
+        "severity": 160.48892250421105
+      },
+      {
+        "scenario": "Base load",
+        "load_factor": 1.0,
+        "battery": "500 MW at bus 3",
+        "dispatch_mw": 0.0,
+        "system_load_mw": 6254.23,
+        "contingencies": 38,
+        "violating": 11,
+        "overload_cases": 10,
+        "low_voltage_cases": 1,
+        "unsolved": 0,
+        "worst_loading_pct": 157.5360721733789,
+        "lowest_v_pu": 0.9368845267107578,
+        "worst_contingency": "line 21-22",
+        "severity": 160.48892250421105
+      },
+      {
+        "scenario": "2030 growth",
+        "load_factor": 1.11,
+        "battery": "none",
+        "dispatch_mw": 0.0,
+        "system_load_mw": 6942.195300000001,
+        "contingencies": 38,
+        "violating": 17,
+        "overload_cases": 15,
+        "low_voltage_cases": 4,
+        "unsolved": 0,
+        "worst_loading_pct": 164.1175260717712,
+        "lowest_v_pu": 0.9071058362511292,
+        "worst_contingency": "line 21-22",
+        "severity": 338.6454854253742
+      },
+      {
+        "scenario": "2030 growth",
+        "load_factor": 1.11,
+        "battery": "500 MW at bus 3",
+        "dispatch_mw": 375.0,
+        "system_load_mw": 6942.195300000001,
+        "contingencies": 38,
+        "violating": 10,
+        "overload_cases": 9,
+        "low_voltage_cases": 1,
+        "unsolved": 0,
+        "worst_loading_pct": 163.57575083135796,
+        "lowest_v_pu": 0.9174560062988751,
+        "worst_contingency": "line 21-22",
+        "severity": 246.76957890590762
+      },
+      {
+        "scenario": "2035 growth",
+        "load_factor": 1.231,
+        "battery": "none",
+        "dispatch_mw": 0.0,
+        "system_load_mw": 7698.9571300000025,
+        "contingencies": 38,
+        "violating": 38,
+        "overload_cases": 37,
+        "low_voltage_cases": 37,
+        "unsolved": 1,
+        "worst_loading_pct": 233.63275303371952,
+        "lowest_v_pu": 0.8245129980960244,
+        "worst_contingency": "line 13-14",
+        "severity": 3605.166701557568
+      },
+      {
+        "scenario": "2035 growth",
+        "load_factor": 1.231,
+        "battery": "500 MW at bus 3",
+        "dispatch_mw": 500.0,
+        "system_load_mw": 7698.9571300000025,
+        "contingencies": 38,
+        "violating": 21,
+        "overload_cases": 14,
+        "low_voltage_cases": 16,
+        "unsolved": 0,
+        "worst_loading_pct": 159.93780828711724,
+        "lowest_v_pu": 0.8763980343822622,
+        "worst_contingency": "line 21-22",
+        "severity": 612.7448828728234
+      }
+    ]
+  },
+  "runtime_s": 114.3
+}
